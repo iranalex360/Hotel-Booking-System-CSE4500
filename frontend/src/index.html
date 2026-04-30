@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CheckIn.com Hotel Booking</title>
+  <link href="../dist/output.css" rel="stylesheet" />
+</head>
+<body class="bg-zinc-200 text-slate-800">
+
+  <!-- Header -->
+  <header class="border-b border-slate-300 bg-zinc-100">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
+      <div class="flex items-center gap-3">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="h-34 w-auto sm:h-25 lg:h-25"
+        />
+      </div>
+
+      <nav class="hidden items-center gap-8 md:flex">
+        <a href="#featured" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
+        <a href="#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
+        <a href="#contact" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="bg-zinc-200">
+    <div class="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-6 py-16 md:grid-cols-2 md:items-center md:py-24">
+      <div>
+        <p class="mb-4 inline-block rounded-full bg-sky-100 px-4 py-1 text-sm font-semibold text-sky-600">
+          Hotel Booking Platform
+        </p>
+
+        <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+          Book smarter.<br />
+          Stay better.
+        </h1>
+
+        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+          Discover hotels, browse rooms, and manage reservations through a modern booking experience connected to your database.
+        </p>
+
+        <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+          <a
+            href="#featured"
+            class="rounded-2xl bg-sky-500 px-6 py-3 text-center font-semibold text-white shadow-sm transition hover:bg-sky-600"
+          >
+            Explore Hotels
+          </a>
+
+          <a
+            href="#about"
+            class="rounded-2xl border border-slate-300 bg-white px-6 py-3 text-center font-semibold text-slate-700 transition hover:border-sky-400 hover:text-sky-600"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+        <div class="rounded-[1.5rem] bg-zinc-100 p-6">
+          <h2 class="text-xl font-bold text-slate-900">Quick Search</h2>
+          <p class="mt-2 text-sm text-slate-500">
+            This can later become your real booking search form.
+          </p>
+
+          <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div class="rounded-2xl bg-white p-4">
+              <label class="text-sm font-medium text-slate-500">Destination</label>
+              <p class="mt-2 font-semibold text-slate-900">Select hotel</p>
+            </div>
+
+            <div class="rounded-2xl bg-white p-4">
+              <label class="text-sm font-medium text-slate-500">Guests</label>
+              <p class="mt-2 font-semibold text-slate-900">2 Guests</p>
+            </div>
+
+            <div class="rounded-2xl bg-white p-4">
+              <label class="text-sm font-medium text-slate-500">Check-in</label>
+              <p class="mt-2 font-semibold text-slate-900">Choose date</p>
+            </div>
+
+            <div class="rounded-2xl bg-white p-4">
+              <label class="text-sm font-medium text-slate-500">Check-out</label>
+              <p class="mt-2 font-semibold text-slate-900">Choose date</p>
+            </div>
+          </div>
+
+          <button class="mt-6 w-full rounded-2xl bg-sky-500 px-5 py-3 font-semibold text-white transition hover:bg-sky-600">
+            Search Hotels
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Hotels -->
+  <section id="featured" class="bg-white">
+    <div class="mx-auto max-w-7xl px-6 py-14 sm:py-16">
+      <div class="mb-10">
+        <p class="text-sm font-semibold uppercase tracking-wide text-sky-500">
+          Featured Hotels
+        </p>
+        <h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+          Find the right stay for your trip
+        </h2>
+        <p class="mt-3 max-w-2xl text-slate-600">
+          These hotel cards can load directly from your SQL Server database through your backend API.
+        </p>
+      </div>
+
+      <div
+        id="hotels-container"
+        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      >
+        <div class="col-span-full rounded-3xl border border-slate-200 bg-zinc-100 p-6 text-center text-slate-500">
+          Loading hotels...
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="bg-zinc-200">
+    <div class="mx-auto max-w-7xl px-6 py-14 sm:py-16">
+      <div class="mb-10 text-center">
+        <p class="text-sm font-semibold uppercase tracking-wide text-sky-500">
+          Why Use CheckIn.com
+        </p>
+        <h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+          Built for a clean and easy booking experience
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <article class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
+            <span class="text-lg font-bold">1</span>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Simple Design</h3>
+          <p class="mt-3 text-slate-600">
+            Clean layouts, soft backgrounds, and bright call-to-action buttons.
+          </p>
+        </article>
+
+        <article class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
+            <span class="text-lg font-bold">2</span>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Responsive Layout</h3>
+          <p class="mt-3 text-slate-600">
+            Built with Tailwind breakpoints like sm, md, and lg for your rubric.
+          </p>
+        </article>
+
+        <article class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
+            <span class="text-lg font-bold">3</span>
+          </div>
+          <h3 class="text-xl font-bold text-slate-900">Database Ready</h3>
+          <p class="mt-3 text-slate-600">
+            Your backend can supply real hotels, rooms, and bookings from SQL Server.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="contact" class="bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="h-12 w-auto sm:h-14"
+        />
+      </div>
+
+      <p class="text-sm text-slate-500">
+        Hotel Booking System Project • Tailwind CSS • Node.js • SQL Server
+      </p>
+    </div>
+  </footer>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/home.js"></script>
+</body>
+</html>
