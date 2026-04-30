@@ -59,7 +59,7 @@ frontend/src/js/home.js
 Clone the GitHub repository:
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/iranalex360/Hotel-Booking-System-CSE4500
 ```
 
 Then open the project in VS Code.
