@@ -103,14 +103,9 @@ Run the SQL files in this order.
 Run:
 
 ```text
-database/full-setup.sql
+database/seed/sample-data.sql
 ```
 
-Then run:
-
-```text
-database/image-updates.sql
-```
 
 #### Option B: If using separate files
 
