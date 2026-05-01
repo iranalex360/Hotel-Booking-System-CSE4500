@@ -11,19 +11,21 @@
   <!-- Header -->
   <header class="border-b border-slate-300 bg-zinc-100">
     <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-      <div class="flex items-center gap-3">
-        <img
-          src="./assets/logo.png"
-          alt="CheckIn.com logo"
-          class="h-34 w-auto sm:h-25 lg:h-25"
-        />
-      </div>
+        <div class="flex items-center gap-3">
+            <img src="./assets/checkinLogo.png"
+                 alt="CheckIn.com logo"
+                 class="h-34 w-auto sm:h-25 lg:h-25" />
+            <img src="./assets/logo.png"
+                 alt="CheckIn.com logo"
+                 class="h-34 w-auto sm:h-25 lg:h-25" />
+        </div>
 
-      <nav class="hidden items-center gap-8 md:flex">
-        <a href="#featured" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
-        <a href="#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
-        <a href="#contact" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Contact</a>
-      </nav>
+        <nav class="hidden items-center gap-8 md:flex">
+            <a href="#featured" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
+            <a href="#why-us" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Why us</a>
+            <a href="#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
+            <a href="#contact" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Contact</a>
+        </nav>
     </div>
   </header>
 
@@ -65,7 +67,7 @@
         <div class="rounded-[1.5rem] bg-zinc-100 p-6">
           <h2 class="text-xl font-bold text-slate-900">Quick Search</h2>
           <p class="mt-2 text-sm text-slate-500">
-            This can later become your real booking search form.
+            Preview your next booking search form.
           </p>
 
           <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -124,8 +126,8 @@
     </div>
   </section>
 
-  <!-- About -->
-  <section id="about" class="bg-zinc-200">
+  <!-- why us -->
+  <section id="why-us" class="bg-zinc-200">
     <div class="mx-auto max-w-7xl px-6 py-14 sm:py-16">
       <div class="mb-10 text-center">
         <p class="text-sm font-semibold uppercase tracking-wide text-sky-500">
@@ -143,7 +145,10 @@
           </div>
           <h3 class="text-xl font-bold text-slate-900">Simple Design</h3>
           <p class="mt-3 text-slate-600">
-            Clean layouts, soft backgrounds, and bright call-to-action buttons.
+              The interface uses clean layouts, soft backgrounds, and bold call‑to‑action buttons to guide
+              users naturally through each step of the booking process. By minimizing visual noise and
+              highlighting key actions, CheckIn.com reduces friction and helps guests complete bookings
+              faster while still feeling confident and in control.
           </p>
         </article>
 
@@ -151,9 +156,12 @@
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
             <span class="text-lg font-bold">2</span>
           </div>
-          <h3 class="text-xl font-bold text-slate-900">Responsive Layout</h3>
+          <h3 class="text-xl font-bold text-slate-900">Fully Responsive Layout</h3>
           <p class="mt-3 text-slate-600">
-            Built with Tailwind breakpoints like sm, md, and lg for your rubric.
+              CheckIn.com is built with a responsive layout using Tailwind breakpoints like sm, md, and xl,
+              so the site looks and works perfectly on mobile phones, tablets, and desktops.Whether your
+              users are browsing from home or on the go, they get a consistent, smooth experience that
+              adapts seamlessly to their screen size.
           </p>
         </article>
 
@@ -161,26 +169,67 @@
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 text-sky-500">
             <span class="text-lg font-bold">3</span>
           </div>
-          <h3 class="text-xl font-bold text-slate-900">Database Ready</h3>
+          <h3 class="text-xl font-bold text-slate-900">Ready for Real‑World Data</h3>
           <p class="mt-3 text-slate-600">
-            Your backend can supply real hotels, rooms, and bookings from SQL Server.
+              The platform is database‑ready, designed to connect directly to your backend and pull live
+              hotel listings, room types, availability, and booking records from SQL Server.This means
+              CheckIn.com isn’t just a static prototype—it’s a production‑ready solution that can scale with
+              your hotel inventory and handle real bookings from day one.             
           </p>
         </article>
       </div>
     </div>
   </section>
-
+  <!-- About -->
+  <section id="about" class="bg-white">
+      <div class="mx-auto max-w-7xl px-6 py-14 sm:py-16">
+          <div class="mb-10">
+              <p class="text-sm font-semibold uppercase tracking-wide text-sky-500">
+                  About CheckIn.com
+              </p>
+              <h2 class="mt-2 text-3xl font-bold text-slate-900 sm:text-4xl">
+                  A small group
+                  determined to make getting a hotel easier
+              </h2>
+              <p class="mt-3 max-w-2xl text-slate-600">
+                  <br />
+                  CheckIn.com began as a simple idea shared between a small group of friends who had all had
+                  the same frustrating experience: struggling to book a hotel online. Between confusing
+                  layouts, hidden fees, and clunky mobile forms, what should have taken minutes often turned
+                  into a stressful chore. That’s when they decided enough was enough—they wanted to make
+                  getting a hotel genuinely easy.<br /><br />
+                  This small team brought together a frontend designer obsessed with clean, intuitive
+                  interfaces, a backend developer who believed in reliable, fast systems, and a product thinker
+                  focused squarely on the user’s journey. They started sketching screens, arguing over tiny
+                  details like button colors and form fields, and testing early versions with real travelers. Every
+                  frustrating step they found became a design challenge they refused to overlook.<br /><br />
+                  From the start, CheckIn.com was built around one belief: booking a hotel should feel light,
+                  clear, and effortless. The team focused on simple navigation, responsive layouts that work on
+                  any device, and a backend that can connect to real hotel data instead of just mockups. They
+                  wanted travelers to know exactly what they were getting, when they were getting it, and
+                  how much it would cost—no surprises.<br /><br />
+                  Today, CheckIn.com is still driven by that same small‑group spirit. Even as the platform grows,
+                  every feature is measured against the same question: does this actually make getting a hotel
+                  easier? For a small team that once just wanted to fix their own booking headaches, that goal
+                  hasn’t changed a bit.
+              </p>
+          </div>
+      </div>
+  </section>
   <!-- Footer -->
   <footer id="contact" class="bg-white">
     <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
       <div class="flex items-center gap-3">
-        <img
+          <img src="./assets/checkinLogo.png"
+               alt="CheckIn.com logo"
+               class="h-12 w-auto sm:h-14" />
+          <img
           src="./assets/logo.png"
           alt="CheckIn.com logo"
           class="h-12 w-auto sm:h-14"
         />
       </div>
-
+       <a class ="mb-4 inline-block rounded-full bg-sky-100 px-4 py-1 text-sm font-semibold text-sky-600" href="" alt="" target="_self">support@checkin.com</a>
       <p class="text-sm text-slate-500">
         Hotel Booking System Project • Tailwind CSS • Node.js • SQL Server
       </p>
