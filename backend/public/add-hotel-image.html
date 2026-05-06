@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Hotel Images</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 30px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .hotel-card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 14px;
+      max-width: 800px;
+    }
+
+    .hotel-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .hotel-address {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .existing-image {
+      font-size: 13px;
+      color: green;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 6px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 9px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1f6feb;
+      color: white;
+    }
+
+    button:hover {
+      background: #1557b0;
+    }
+
+    .preview {
+      margin-top: 12px;
+      max-width: 240px;
+      max-height: 160px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      display: none;
+      object-fit: cover;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: #b00020;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Add Hotel Images</h1>
+
+  <div id="status">Loading hotels...</div>
+  <div id="hotels"></div>
+
+  <script>
+    const hotelsContainer = document.getElementById("hotels");
+    const statusEl = document.getElementById("status");
+
+    async function loadHotels() {
+      try {
+        const response = await fetch("/api/image-candidates/hotels");
+        const hotels = await response.json();
+
+        if (!response.ok) {
+          throw new Error(hotels.details || hotels.error || "Failed to load hotels");
+        }
+
+        statusEl.textContent = `${hotels.length} hotels loaded`;
+        hotelsContainer.innerHTML = "";
+
+        hotels.forEach((hotel) => {
+          const card = document.createElement("div");
+          card.className = "hotel-card";
+          card.id = `hotel-card-${hotel.hotel_id}`;
+
+          const existingImageHtml = hotel.image
+            ? `<div class="existing-image">Current image: ${escapeHtml(hotel.image)}</div>`
+            : `<div class="existing-image" style="color:#777;">No image saved yet</div>`;
+
+          card.innerHTML = `
+            <div class="hotel-title">
+              ID ${hotel.hotel_id} - ${escapeHtml(hotel.names)}
+            </div>
+
+            <div class="hotel-address">
+              ${escapeHtml(hotel.address || "")}
+            </div>
+
+            ${existingImageHtml}
+
+            <label>Image URL</label>
+            <input
+              id="image-url-${hotel.hotel_id}"
+              type="text"
+              placeholder="Paste image URL here"
+              value="${hotel.image ? escapeHtmlAttribute(hotel.image) : ""}"
+            />
+
+            <button onclick="previewImage(${hotel.hotel_id})">Preview</button>
+            <button onclick="saveImage(${hotel.hotel_id})">Save to Database</button>
+
+            <br />
+
+            <img id="preview-${hotel.hotel_id}" class="preview" />
+
+            <div id="status-${hotel.hotel_id}" class="status"></div>
+          `;
+
+          hotelsContainer.appendChild(card);
+        });
+      } catch (error) {
+        statusEl.className = "error";
+        statusEl.textContent = error.message;
+      }
+    }
+
+    function previewImage(hotelId) {
+      const input = document.getElementById(`image-url-${hotelId}`);
+      const preview = document.getElementById(`preview-${hotelId}`);
+      const status = document.getElementById(`status-${hotelId}`);
+
+      const imageUrl = input.value.trim();
+
+      if (!imageUrl) {
+        status.className = "status error";
+        status.textContent = "Please enter an image URL.";
+        return;
+      }
+
+      preview.src = imageUrl;
+      preview.style.display = "block";
+
+      status.className = "status";
+      status.textContent = "";
+    }
+
+    async function saveImage(hotelId) {
+      const input = document.getElementById(`image-url-${hotelId}`);
+      const status = document.getElementById(`status-${hotelId}`);
+
+      const imageUrl = input.value.trim();
+
+      if (!imageUrl) {
+        status.className = "status error";
+        status.textContent = "Please enter an image URL.";
+        return;
+      }
+
+      try {
+        status.className = "status";
+        status.textContent = "Saving...";
+
+        const response = await fetch(`/api/image-candidates/hotels/${hotelId}/save`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ imageUrl })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.details || data.error || "Failed to save image");
+        }
+
+        status.className = "status success";
+        status.textContent = "Saved successfully to dbo.hotel_image.image.";
+
+        console.log("Saved:", data);
+      } catch (error) {
+        status.className = "status error";
+        status.textContent = error.message;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeHtmlAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    loadHotels();
+  </script>
+</body>
+</html>

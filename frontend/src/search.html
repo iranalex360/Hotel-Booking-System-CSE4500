@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Hotels | CheckIn.com</title>
+  <link href="../dist/output.css" rel="stylesheet" />
+</head>
+
+<body class="bg-zinc-200 text-slate-800">
+
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <a href="./index.html" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+        />
+      </a>
+
+      <nav class="hidden items-center gap-8 md:flex">
+        <a href="./index.html" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Home</a>
+        <a href="./index.html#featured" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
+        <a href="./index.html#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
+        <div id="auth-nav"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-zinc-200">
+      <div class="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+
+        <div class="mb-10">
+          <p class="mb-4 inline-block rounded-full bg-sky-100 px-4 py-1 text-sm font-semibold uppercase tracking-wide text-sky-600">
+            Search Hotels
+          </p>
+
+          <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+            Find the right hotel for your stay.
+          </h1>
+
+          <p class="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            Search by hotel name, city, address, or choose how many guests are staying.
+          </p>
+        </div>
+
+        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <form id="search-form" class="grid grid-cols-1 gap-4 md:grid-cols-12">
+
+            <div class="md:col-span-7">
+              <label class="mb-2 block text-sm font-semibold text-slate-700">
+                Hotel name or location
+              </label>
+
+              <input
+                id="search-input"
+                type="text"
+                placeholder="Search Memphis, Courtyard, Hayden..."
+                class="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              />
+            </div>
+
+            <div class="md:col-span-3">
+              <label class="mb-2 block text-sm font-semibold text-slate-700">
+                Guests
+              </label>
+
+              <select
+                id="guest-select"
+                class="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-700 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              >
+                <option value="1">1 guest</option>
+                <option value="2" selected>2 guests</option>
+                <option value="3">3 guests</option>
+                <option value="4">4 guests</option>
+                <option value="5">5 guests</option>
+                <option value="6">6 guests</option>
+              </select>
+            </div>
+
+            <div class="flex items-end md:col-span-2">
+              <button
+                type="submit"
+                class="w-full rounded-2xl bg-sky-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-sky-600"
+              >
+                Search
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <div class="mt-8 flex items-center justify-between gap-4">
+          <h2 class="text-2xl font-bold text-slate-900">
+            Results
+          </h2>
+
+          <p id="results-count" class="text-sm font-semibold text-slate-500">
+            Loading hotels...
+          </p>
+        </div>
+
+        <div
+          id="search-results"
+          class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <div class="col-span-full rounded-3xl border border-slate-200 bg-white p-6 text-center text-slate-500">
+            Loading hotels...
+          </div>
+        </div>
+        <div id="load-more-wrapper" class="mt-10 hidden text-center">
+            <button
+                id="load-more-btn"
+                type="button"
+                class="rounded-2xl bg-sky-500 px-8 py-3 font-semibold text-white shadow-sm transition hover:bg-sky-600"
+            >
+                Load More Hotels
+            </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+          <a href="./index.html" class="flex items-center">
+          <img
+            src="./assets/logo.png"
+            alt="CheckIn.com logo"
+            class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+          />
+        </a>
+
+      <p class="text-sm text-slate-500">
+        Hotel Booking System Project • Tailwind CSS • Node.js • SQL Server
+      </p>
+    </div>
+  </footer>
+
+  <script src="./js/search.js"></script>
+</body>
+</html>

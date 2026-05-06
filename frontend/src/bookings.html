@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Bookings | CheckIn.com</title>
+
+  <link href="../dist/output.css" rel="stylesheet" />
+</head>
+
+<body class="bg-zinc-200 text-slate-800">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      <a href="./index.html" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+        />
+      </a>
+
+      <nav class="hidden items-center gap-8 md:flex">
+        <a href="./index.html" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Home</a>
+        <a href="./search.html" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
+        <a href="./index.html#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
+        <div id="auth-nav"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="bg-zinc-200">
+      <div class="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+
+        <div class="mb-10">
+          <p class="mb-4 inline-block rounded-full bg-sky-100 px-4 py-1 text-sm font-semibold uppercase tracking-wide text-sky-600">
+            My Bookings
+          </p>
+
+          <h1 class="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+            Manage your stays.
+          </h1>
+
+          <p class="mt-4 max-w-2xl text-lg leading-8 text-slate-600">
+            View upcoming reservations, check past stays, and leave reviews after your trip.
+          </p>
+        </div>
+
+        <div id="signin-required" class="hidden rounded-[2rem] bg-white p-8 text-center shadow-sm">
+          <h2 class="text-2xl font-bold text-slate-900">
+            Sign in to view your bookings
+          </h2>
+
+          <p class="mt-3 text-slate-500">
+            Your bookings are connected to your account.
+          </p>
+
+          <a
+            href="./auth.html?redirect=./bookings.html"
+            class="mt-6 inline-block rounded-2xl bg-sky-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-sky-600"
+          >
+            Sign In or Create Account
+          </a>
+        </div>
+
+        <div id="bookings-content">
+          <section>
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h2 class="text-2xl font-bold text-slate-900">
+                Current Bookings
+              </h2>
+
+              <p id="current-count" class="text-sm font-semibold text-slate-500"></p>
+            </div>
+
+            <div
+              id="current-bookings"
+              class="grid grid-cols-1 gap-6 lg:grid-cols-2"
+            >
+              <div class="rounded-3xl bg-white p-6 text-center text-slate-500 shadow-sm">
+                Loading current bookings...
+              </div>
+            </div>
+          </section>
+
+          <section class="mt-14">
+            <div class="mb-5 flex items-center justify-between gap-4">
+              <h2 class="text-2xl font-bold text-slate-900">
+                Previous Bookings
+              </h2>
+
+              <p id="previous-count" class="text-sm font-semibold text-slate-500"></p>
+            </div>
+
+            <div
+              id="previous-bookings"
+              class="grid grid-cols-1 gap-6 lg:grid-cols-2"
+            >
+              <div class="rounded-3xl bg-white p-6 text-center text-slate-500 shadow-sm">
+                Loading previous bookings...
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <a href="./index.html" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="w-32 sm:w-40 h-auto object-contain"
+        />
+      </a>
+
+      <p class="text-sm text-slate-500">
+        Hotel Booking System Project • Tailwind CSS • Node.js • SQL Server
+      </p>
+    </div>
+  </footer>
+
+  <script src="./js/bookings.js"></script>
+</body>
+</html>

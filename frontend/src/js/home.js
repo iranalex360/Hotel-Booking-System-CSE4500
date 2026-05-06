@@ -82,9 +82,10 @@ function createHotelCard(hotel) {
         </p>
 
         <div class="mt-6">
-          <button class="rounded-2xl bg-sky-500 px-5 py-2.5 font-semibold text-white transition hover:bg-sky-600">
-            View Details
-          </button>
+          <a
+            href="./hotel-details.html?id=${hotel.hotel_id}"
+            class="inline-block rounded-2xl bg-sky-500 px-5 py-2.5 font-semibold text-white transition hover:bg-sky-600">View Details
+          </a>
         </div>
       </div>
     </article>

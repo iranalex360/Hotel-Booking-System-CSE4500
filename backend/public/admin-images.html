@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Hotel Image Picker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .hotel {
+      background: white;
+      padding: 16px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .hotel-title {
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .hotel-address {
+      color: #555;
+      margin-top: 4px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #1f6feb;
+      color: white;
+    }
+
+    button:hover {
+      background: #1557b0;
+    }
+
+    .images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .image-card {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 130px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .image-card button {
+      width: 100%;
+      background: #218838;
+    }
+
+    .image-card button:hover {
+      background: #17692b;
+    }
+
+    .status {
+      margin-top: 10px;
+      color: #555;
+    }
+
+    .error {
+      color: #b00020;
+    }
+
+    .booking-link {
+      display: inline-block;
+      margin-top: 8px;
+      color: #1f6feb;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hotel Image Picker</h1>
+
+  <div id="status">Loading hotels...</div>
+  <div id="hotels"></div>
+
+  <script>
+    const hotelsContainer = document.getElementById("hotels");
+    const statusEl = document.getElementById("status");
+
+    async function loadHotels() {
+      try {
+        const response = await fetch("/api/image-candidates/missing-hotels");
+        const hotels = await response.json();
+
+        if (!response.ok) {
+          throw new Error(hotels.details || hotels.error || "Failed to load hotels");
+        }
+
+        statusEl.textContent = `${hotels.length} hotels missing images`;
+
+        hotelsContainer.innerHTML = "";
+
+        hotels.forEach((hotel) => {
+          const div = document.createElement("div");
+          div.className = "hotel";
+          div.id = `hotel-${hotel.hotel_id}`;
+
+          div.innerHTML = `
+            <div class="hotel-title">${escapeHtml(hotel.names)}</div>
+            <div class="hotel-address">${escapeHtml(hotel.address || "")}</div>
+            <button onclick="findImages(${hotel.hotel_id})">Find Images</button>
+            <div class="status" id="status-${hotel.hotel_id}"></div>
+            <div class="images" id="images-${hotel.hotel_id}"></div>
+          `;
+
+          hotelsContainer.appendChild(div);
+        });
+      } catch (error) {
+        statusEl.innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`;
+      }
+    }
+
+    async function findImages(hotelId) {
+      const status = document.getElementById(`status-${hotelId}`);
+      const imagesDiv = document.getElementById(`images-${hotelId}`);
+
+      status.textContent = "Searching Booking.com...";
+      imagesDiv.innerHTML = "";
+
+      try {
+        const response = await fetch(`/api/image-candidates/hotels/${hotelId}/candidates`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.details || data.error || "Failed to fetch images");
+        }
+
+        const bookingUrl = data.bookingHotel?.url;
+
+        status.innerHTML = `
+          Found ${data.candidates.length} images.
+          ${
+            bookingUrl
+              ? `<br><a class="booking-link" href="${bookingUrl}" target="_blank">Open Booking.com page</a>`
+              : ""
+          }
+        `;
+
+        if (!data.candidates.length) {
+          imagesDiv.innerHTML = `<div class="error">No images found.</div>`;
+          return;
+        }
+
+        data.candidates.forEach((candidate) => {
+          const card = document.createElement("div");
+          card.className = "image-card";
+
+          card.innerHTML = `
+            <img src="${candidate.url}" alt="">
+            <button onclick="saveImage(${hotelId}, '${escapeJs(candidate.url)}')">
+              Save This Image
+            </button>
+          `;
+
+          imagesDiv.appendChild(card);
+        });
+      } catch (error) {
+        status.innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`;
+      }
+    }
+
+    async function saveImage(hotelId, imageUrl) {
+      const status = document.getElementById(`status-${hotelId}`);
+
+      try {
+        status.textContent = "Saving image...";
+
+        const response = await fetch(`/api/image-candidates/hotels/${hotelId}/save`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ imageUrl })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.details || data.error || "Failed to save image");
+        }
+
+        status.textContent = "Image saved successfully.";
+
+        const hotelDiv = document.getElementById(`hotel-${hotelId}`);
+        hotelDiv.style.opacity = "0.5";
+
+        setTimeout(() => {
+          hotelDiv.remove();
+        }, 800);
+      } catch (error) {
+        status.innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`;
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeJs(value) {
+      return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'");
+    }
+
+    loadHotels();
+  </script>
+</body>
+</html>
