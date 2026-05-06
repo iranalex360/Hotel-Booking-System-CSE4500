@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | CheckIn.com</title>
+  <link href="../dist/output.css" rel="stylesheet" />
+</head>
+
+<body class="min-h-screen bg-zinc-200 text-slate-800">
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <a href="./index.html" class="flex items-center">
+      <img
+        src="./assets/logo.png"
+        alt="CheckIn.com logo"
+        class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+      />
+    </a>
+
+      <a
+        href="./index.html"
+        class="rounded-2xl bg-slate-100 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:text-sky-600"
+      >
+        Back to Hotels
+      </a>
+    </div>
+  </header>
+
+  <main class="mx-auto flex max-w-7xl items-center justify-center px-6 py-12">
+    <section class="grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-sm md:grid-cols-2">
+
+      <div class="hidden bg-sky-500 p-10 text-white md:block">
+        <h1 class="text-4xl font-bold leading-tight">
+          Book your next stay with CheckIn.com
+        </h1>
+
+        <p class="mt-4 text-sky-50">
+          Sign in or create an account to confirm hotel bookings, manage stays, and save your details.
+        </p>
+
+        <div class="mt-10 rounded-[1.5rem] bg-white/15 p-5">
+          <p class="text-sm font-semibold uppercase tracking-wide">
+            Secure booking
+          </p>
+          <p class="mt-2 text-sky-50">
+            Your account connects directly to your booking records.
+          </p>
+        </div>
+      </div>
+
+      <div class="p-8 sm:p-10">
+        <div class="mb-6 flex rounded-2xl bg-slate-100 p-1">
+          <button
+            id="show-login"
+            class="w-1/2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-sky-600 shadow-sm"
+            type="button"
+          >
+            Sign In
+          </button>
+
+          <button
+            id="show-register"
+            class="w-1/2 rounded-xl px-4 py-3 text-sm font-bold text-slate-500"
+            type="button"
+          >
+            Create Account
+          </button>
+        </div>
+
+        <div
+          id="auth-message"
+          class="mb-5 hidden rounded-2xl p-4 text-sm font-semibold"
+        ></div>
+
+        <form id="login-form" class="space-y-5">
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Email
+            </label>
+            <input
+              id="login-email"
+              type="email"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Password
+            </label>
+            <input
+              id="login-password"
+              type="password"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-2xl bg-sky-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-sky-600"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <form id="register-form" class="hidden space-y-5">
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Full Name
+            </label>
+            <input
+              id="register-name"
+              type="text"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Email
+            </label>
+            <input
+              id="register-email"
+              type="email"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Phone
+            </label>
+            <input
+              id="register-phone"
+              type="tel"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <div>
+            <label class="mb-2 block text-sm font-semibold text-slate-700">
+              Password
+            </label>
+            <input
+              id="register-password"
+              type="password"
+              minlength="6"
+              class="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-100"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full rounded-2xl bg-sky-500 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-sky-600"
+          >
+            Create Account
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/auth.js"></script>
+</body>
+</html>

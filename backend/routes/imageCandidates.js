@@ -1,14 +1,14 @@
 const express = require("express");
-const router = express.Router();
 
 const {
-  getImageCandidates,
-  saveSelectedHotelImage,
-  fillAllHotelImages
+  getHotelsForImagePicker,
+  saveSelectedHotelImage
 } = require("../controllers/imageCandidatesController");
 
-router.post("/", getImageCandidates);
+const router = express.Router();
+
+router.get("/hotels", getHotelsForImagePicker);
+
 router.post("/hotels/:id/save", saveSelectedHotelImage);
-router.post("/fill-all", fillAllHotelImages);
 
 module.exports = router;

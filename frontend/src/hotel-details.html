@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hotel Details | CheckIn.com</title>
+  <link href="../dist/output.css" rel="stylesheet" />
+</head>
+<body class="bg-zinc-200 text-slate-800">
+
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <a href="./index.html" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+        />
+      </a>
+
+            <nav class="hidden items-center gap-8 md:flex">
+        <a href="./search.html" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Hotels</a>
+        <a href="./index.html#why-us" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Why us?</a>
+        <a href="./index.html#about" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">About</a>
+        <a href="./index.html#contact" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">Contact</a>
+        <a href="./bookings.html" class="text-sm font-semibold text-slate-700 transition hover:text-sky-500">My Bookings</a>
+
+        <div id="auth-nav"></div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+  <section class="relative overflow-hidden bg-zinc-200">
+    <div class="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+      <a
+        href="./search.html"
+        class="mb-8 inline-block rounded-2xl bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:text-sky-600"
+      >
+        ← Back to Hotels
+      </a>
+
+      <div id="hotel-details-container">
+        <div class="rounded-[2rem] bg-white p-8 text-center text-slate-500 shadow-sm">
+          Loading hotel details...
+        </div>
+      </div>
+
+      <!-- Reviews -->
+      <section
+        id="reviews-section"
+        class="mt-10 rounded-[2rem] bg-white p-8 shadow-sm"
+      >
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-sky-500">
+              Guest Reviews
+            </p>
+
+            <h2 class="mt-2 text-3xl font-bold text-slate-900">
+              What guests are saying
+            </h2>
+          </div>
+
+          <p id="reviews-count" class="text-sm font-semibold text-slate-500">
+            Loading reviews...
+          </p>
+        </div>
+
+        <div
+          id="reviews-container"
+          class="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2"
+        >
+          <div class="rounded-3xl bg-zinc-100 p-6 text-center text-slate-500 md:col-span-2">
+            Loading reviews...
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+  <footer class="bg-white">
+    <div class="mx-auto flex max-w-7xl flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <a href="./index.html" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="CheckIn.com logo"
+          class="w-32 sm:w-40 md:w-48 lg:w-56 h-auto object-contain"
+        />
+      </a>
+
+      <p class="text-sm text-slate-500">
+        Hotel Booking System Project • Tailwind CSS • Node.js • SQL Server
+      </p>
+    </div>
+  </footer>
+
+  <script src="./js/api.js"></script>
+  <script src="./js/hotel-details.js"></script>
+</body>
+</html>

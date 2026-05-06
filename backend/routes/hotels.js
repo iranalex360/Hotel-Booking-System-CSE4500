@@ -5,10 +5,12 @@ const {
   getFeaturedHotels,
   getHotelById,
   getRoomsByHotelId,
-  getReviewsByHotelId
+  getReviewsByHotelId,
+  searchHotels
 } = require("../controllers/hotelsController");
 
 router.get("/", getFeaturedHotels);
+router.get("/search/all", searchHotels);
 router.get("/:id", getHotelById);
 router.get("/:id/rooms", getRoomsByHotelId);
 router.get("/:id/reviews", getReviewsByHotelId);
