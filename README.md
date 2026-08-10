@@ -1,470 +1,257 @@
-﻿# Hotel-Booking-System-CSE4500
+<div align="center">
 
- # Google Slide Presentation:
- https://docs.google.com/presentation/d/1yBi-aplX_WAS3CjlsNmqdeIomb3Ma2Sg/edit?slide=id.p1#slide=id.p1
+  # 🏨 CheckIn.com — Enterprise Hotel Booking Platform
 
-# Teammate Setup Guide
+  <p align="center">
+    <strong>A high-performance, full-stack commercial hotel reservation system built with Node.js, Express, PostgreSQL, Tailwind CSS v4, and automated CI/CD.</strong>
+  </p>
 
-## Project Overview
+  <p align="center">
+    <a href="https://github.com/iranalex360/Hotel-Booking-System-CSE4500"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github" alt="GitHub Repo"></a>
+    <a href="https://hotel-booking-system-cse4500.onrender.com"><img src="https://img.shields.io/badge/Render-Live_Production-46E3B7?style=for-the-badge&logo=render&logoColor=black" alt="Render Live"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Jest-19%2F19_Tests_Passing-C21325?style=for-the-badge&logo=jest" alt="Jest Tests"></a>
+    <a href="#"><img src="https://img.shields.io/badge/CI%2FCD-GitHub_Actions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white" alt="GitHub Actions"></a>
+  </p>
 
-This project is a hotel booking system with:
-
-- a SQL Server database
-- a Node.js backend
-- a frontend built with HTML, JavaScript, and Tailwind CSS
-
-To reproduce the project, each teammate needs to set up the database first, then the backend, then the frontend.
-
----
-
-## Required Software
-
-Each teammate should install:
-
-- Git
-- VS Code
-- Node.js
-- SQL Server Management Studio 2022
-- SQL Server Express or another local SQL Server instance
-- Live Server extension in VS Code
-- Thunder Client extension in VS Code
+</div>
 
 ---
 
-## Project Folder Structure
+## 🌟 Executive Summary
 
-The repo should contain folders similar to these:
+**CheckIn.com** is a full-stack, enterprise-grade hotel booking platform designed to replicate the sleek UX, real-time availability math, security hardening, and reliability of tier-1 commercial booking engines like Expedia or Booking.com.
 
-```text
-backend/
-frontend/
-database/
-docs/
-```
-
-Important files include:
-
-```text
-database/full-setup.sql
-database/schema.sql
-database/sample-data.sql
-database/image-updates.sql
-backend/server.js
-frontend/src/index.html
-frontend/src/js/api.js
-frontend/src/js/home.js
-```
+The platform handles real-time hotel discovery, dynamic guest capacity filtering, automated stay cost calculations, instant reservation booking, automated receipt generation (`CHKIN-XXXXXX`), and an administrative management portal guarded by server-side role security.
 
 ---
 
-## Step 1: Clone the Repository
+## 🚀 Key Engineering & Security Highlights (Recruiter Showcase)
 
-Clone the GitHub repository:
+### 🛡️ 1. Enterprise Security Engineering
+- **Multi-Source Session Auth:** Token extraction middleware automatically parses JWT credentials from `Authorization: Bearer` headers, HTTP cookies (`req.cookies.token`), or query strings.
+- **Server-Side Route Vault:** Administrative pages (`backend/admin/add-hotel-image.html`) are isolated outside the public static directory and served only after server-side token & role verification (`role === 'admin'`). Unauthenticated requests are immediately redirected to `/auth.html`.
+- **Defense in Depth:** Protected against web vulnerabilities using **Helmet** security headers, **Bcrypt** password hashing, and **Express Rate Limiting**.
 
-```bash
-git clone https://github.com/iranalex360/Hotel-Booking-System-CSE4500
-```
+### 🔒 2. SQL Injection Immunity & Database Integrity
+- **100% Parameterized SQL:** All PostgreSQL queries use parameterized placeholders (`$1, $2`), immunizing the backend against SQL injection attacks.
+- **Transactional Safety:** Critical booking operations execute within strict PostgreSQL transactions (`BEGIN` ... `COMMIT` / `ROLLBACK`) to eliminate race conditions and double bookings.
+- **Referential Integrity:** Supabase PostgreSQL cloud database designed with cascading constraints (`ON DELETE CASCADE`) across 6 core entities.
 
-Then open the project in VS Code.
+### 🎨 3. Modern Glassmorphism UI & Mobile Responsiveness
+- **Tailwind CSS v4 Aesthetic:** Curated glassmorphism design featuring backdrop blurring (`backdrop-blur-md`), dark mode elements, and custom HSL color palettes.
+- **Pure SVG Vector Icons:** 100% emoji-free UI utilizing crisp vector SVG icons for hotels, search, bookings, contacts, print receipts, and star ratings.
+- **Responsive Navigation Drawer:** Smooth mobile hamburger drawer (`☰` $\rightarrow$ `✕`) with integrated authentication state management.
+
+### 🧪 4. Automated Testing & Verification Suite
+- **100% Pass Rate:** 19 automated unit & integration tests written with **Jest** and **Supertest** covering business math, JWT verification, RBAC middleware, and error handling contracts.
+
+### 🔄 5. Continuous Integration & Deployment (CI/CD)
+- **GitHub Actions Pipeline:** Automated `.github/workflows/ci-cd.yml` pipeline that builds Tailwind assets, executes unit tests, and triggers continuous deployment to **Render**.
 
 ---
 
-## Step 2: Set Up the Database in SQL Server
+## 🛠️ Technology Stack
 
-### 2.1 Open SQL Server
+| Layer | Technology | Engineering Highlights |
+| :--- | :--- | :--- |
+| **Frontend UI** | HTML5, Tailwind CSS v4, JavaScript (ES6+) | Glassmorphism UX, responsive layouts, mobile drawer |
+| **Icons & Media** | Pure SVG Vector Icons | Crisp, resolution-independent vector assets |
+| **Backend API** | Node.js (v18+), Express.js | Asynchronous RESTful routing architecture |
+| **Database** | PostgreSQL (Supabase Cloud) | Connection pooling, relational schema, transaction locks |
+| **Auth & Security** | JWT (`jsonwebtoken`), `bcryptjs`, `helmet` | Multi-source token verification, RBAC, HTTP security headers |
+| **Testing** | Jest, Supertest | Unit testing business math & API endpoint contracts |
+| **DevOps & Hosting** | GitHub Actions, Render | Automated CI/CD build, test, & production deployment |
 
-Open SQL Server Management Studio and connect to your local SQL Server instance.
+---
 
-Example server name:
+## 📐 Architecture & System Flow
 
-```text
-LAPTOP-JMATS8MC\SQLEXPRESS
-```
+### System Architecture Flow
 
-Authentication used in this project:
+```mermaid
+graph TD
+    subgraph Client Layer [Browser & Mobile Clients]
+        UI[Frontend UI: HTML5 / Tailwind CSS / Vanilla JS]
+        Nav[Mobile Navigation Drawer & SVG Icons]
+        LocalStore[Local Storage & HTTP Cookies]
+    end
 
-```text
-Windows Authentication
-```
+    subgraph Security & Gateway Layer [Express Gateway]
+        Helmet[Helmet Security Headers]
+        RateLimit[Express Rate Limiting]
+        AuthMW[Multi-Source Auth Middleware]
+        AdminMW[Admin Role Guard Middleware]
+    end
 
-### 2.2 Create the Database
+    subgraph Core API Services [Backend Controllers]
+        AuthCtrl[Auth Controller: Bcrypt & JWT]
+        HotelCtrl[Hotels Controller & SerpApi Enricher]
+        BookCtrl[Bookings Controller & Cost Calculator]
+        AdminVault[Private Admin Vault: /admin/hotels]
+    end
 
-If the database does not already exist, create it in SSMS.
+    subgraph Database Layer [Supabase Cloud]
+        DB[(PostgreSQL Relational DB)]
+    end
 
-Example database name:
+    UI -->|HTTPS Requests| Helmet
+    Helmet --> RateLimit
+    RateLimit --> AuthMW
+    AuthMW -->|Valid Token| AdminMW
+    AdminMW -->|Authorized| AdminVault
+    AuthMW --> AuthCtrl
+    AuthMW --> HotelCtrl
+    AuthMW --> BookCtrl
 
-```text
-Hotel Booking System
-```
-
-### 2.3 Run the SQL Files
-
-Run the SQL files in this order.
-
-#### Option A: If using a combined setup file
-
-Run:
-
-```text
-database/seed/sample-data.sql
-```
-
-
-#### Option B: If using separate files
-
-Run:
-
-```text
-database/schema.sql
-database/sample-data.sql
-database/image-updates.sql
-```
-
-### 2.4 What These Files Do
-
-- `schema.sql` creates the tables and relationships
-- `sample-data.sql` inserts the base data
-- `image-updates.sql` adds the hotel image URLs
-- `full-setup.sql` may already include both schema and base data
-
-### 2.5 Verify the Database
-
-After running the scripts, test these queries:
-
-```sql
-SELECT * FROM dbo.hotel;
-SELECT * FROM dbo.hotel_image;
-SELECT * FROM dbo.room;
-```
-
-Also verify that hotel images are present:
-
-```sql
-SELECT hotel_id, urls, image
-FROM dbo.hotel_image
-ORDER BY hotel_id;
+    AuthCtrl --> DB
+    HotelCtrl --> DB
+    BookCtrl --> DB
+    AdminVault --> DB
 ```
 
 ---
 
-## Step 3: Set Up the Backend
+### Database Entity-Relationship (E-R) Diagram
 
-### 3.1 Open the Backend Folder
+```mermaid
+erDiagram
+    users ||--o{ booking : "places"
+    users ||--o{ review : "writes"
+    hotel ||--o{ room : "contains"
+    hotel ||--o{ hotel_image : "has"
+    hotel ||--o{ review : "receives"
+    room ||--o{ booking : "reserved in"
+    booking ||--o{ payment : "settled by"
 
-In the VS Code terminal:
+    users {
+        int users_id PK
+        string full_name
+        string email
+        string password
+        string role
+    }
+
+    hotel {
+        int hotel_id PK
+        string names
+        string address
+        numeric star_rating
+        text descriptions
+    }
+
+    room {
+        int room_id PK
+        int hotel_id FK
+        numeric price
+        int capacity
+    }
+
+    booking {
+        int booking_id PK
+        int users_id FK
+        int room_id FK
+        date check_in_date
+        date check_out_date
+        numeric total_price
+        int guest_count
+    }
+```
+
+---
+
+## 📦 Key Application Features
+
+### 1. Dynamic Hotel Search & Filtering (`search.html`)
+- Real-time search across hotel names and locations.
+- Capacity filtering by guest count.
+- Infinite load pagination (`HOTEL_LIMIT = 21`).
+
+### 2. Hotel Details & Room Reservation (`hotel-details.html`)
+- Interactive booking modal with date validation.
+- Dynamic night calculation and live total price estimation.
+
+### 3. Automated Printable Receipt (`booking-confirmation.html`)
+- Instant redirection post-reservation.
+- Generates confirmation numbers (`CHKIN-XXXXXX`), stay details, and printable receipt support (`window.print()`).
+
+### 4. User Booking & Review Dashboard (`bookings.html`)
+- Separates **Current Bookings** from **Previous Bookings**.
+- Verified guest review modal for submitting hotel ratings and feedback.
+
+### 5. Private Administrative Portal (`/admin/hotels`)
+- Protected admin dashboard for updating hotel links, images, or deleting entries.
+
+---
+
+## 🧪 Automated Testing & QA
+
+Run the full automated test suite locally:
 
 ```bash
 cd backend
+npm test
 ```
 
-### 3.2 Install Dependencies
+### Test Suite Execution Output:
+```text
+PASS tests/adminRoutes.test.js
+PASS tests/authMiddleware.test.js
+PASS tests/adminMiddleware.test.js
+PASS tests/bookingLogic.test.js
+PASS tests/errorHandler.test.js
 
-Run:
+Test Suites: 5 passed, 5 total
+Tests:       19 passed, 19 total
+Snapshots:   0 total
+Time:        1.548 s
+```
 
+---
+
+## 💻 Local Setup & Installation
+
+### 1. Clone Repository
 ```bash
+git clone https://github.com/iranalex360/Hotel-Booking-System-CSE4500.git
+cd Hotel-Booking-System-CSE4500
+```
+
+### 2. Install Dependencies & Build CSS
+```bash
+# Root setup
+npm install
+
+# Compile Tailwind CSS
+cd frontend
+npm install
+npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css
+
+# Setup Backend
+cd ../backend
 npm install
 ```
 
-### 3.3 Create the `.env` File
-
-Create a file named `.env` inside the `backend` folder.
-
-Example:
-
+### 3. Environment Variables Configuration
+Create a `.env` file in the `backend/` directory:
 ```env
-DB_SERVER=LAPTOP-JMATS8MC
-DB_INSTANCE=SQLEXPRESS
-DB_DATABASE=Hotel Booking System
+DB_HOST=aws-0-us-west-1.pooler.supabase.com
+DB_PORT=6543
+DB_DATABASE=postgres
+DB_USER=postgres.sucqfpwsyfpsjgpqgcoj
+DB_PASSWORD=your_password
 PORT=3000
+JWT_SECRET=your_jwt_secret_key
 ```
 
-### 3.4 Important Note About Authentication
-
-This project uses SQL Server with Windows Authentication.
-
-The backend is configured to connect through the SQL Server driver that supports Windows Authentication.
-
-### 3.5 Start the Backend
-
-Run:
-
-```bash
-npm run dev
-```
-
-If successful, the terminal should show something like:
-
-```text
-Server running on http://localhost:3000
-```
-
-### 3.6 Test the Backend
-
-Open a browser and test:
-
-```text
-http://localhost:3000/api/hotels
-```
-
-It should return hotel data as JSON.
-
----
-
-## Step 4: Set Up the Frontend
-
-### 4.1 Open the Frontend Folder
-
-In a new terminal:
-
-```bash
-cd frontend
-```
-
-### 4.2 Install Frontend Dependencies
-
-If needed, run:
-
-```bash
-npm install
-```
-
-### 4.3 Start Tailwind Watch
-
-Run:
-
-```bash
-npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch
-```
-
-Keep this terminal open while working.
-
-### 4.4 Open the Homepage
-
-Open:
-
-```text
-frontend/src/index.html
-```
-
-using the Live Server extension in VS Code.
-
-The page should open in the browser at a local address similar to:
-
-```text
-http://127.0.0.1:5500/frontend/src/index.html
-```
-
----
-
-## Step 5: Verify the Full Project
-
-To confirm everything is working:
-
-1. The backend is running on port 3000
-2. Tailwind watch is running
-3. `index.html` is open with Live Server
-4. The homepage loads the featured hotels
-5. Hotel cards display images from the database
-6. Descriptions and addresses display correctly
-
----
-
-## API Routes Used by the Homepage
-
-### Hotels
-
-```text
-GET /api/hotels
-GET /api/hotels/:id
-GET /api/hotels/:id/rooms
-GET /api/hotels/:id/reviews
-```
-
-### Image Candidate Routes
-
-```text
-POST /api/image-candidates
-POST /api/image-candidates/hotels/:id/save
-POST /api/image-candidates/fill-all
-```
-
-### Bookings
-
-```text
-POST /api/bookings
-```
-
----
-
-## How Hotel Images Work
-
-This project uses the `dbo.hotel_image` table.
-
-### Important Columns
-
-- `urls` stores the original source page URL
-- `image` stores the final image URL used on the homepage
-
-The homepage loads the image from:
-
-```sql
-dbo.hotel_image.image
-```
-
-If image links are missing, the homepage may show fallback images or no images.
-
-That is why `image-updates.sql` is important for reproducing the project.
-
----
-
-## Recommended Setup Order for Teammates
-
-### Database
-
-1. Create or open the database
-2. Run `full-setup.sql` or `schema.sql` and `sample-data.sql`
-3. Run `image-updates.sql`
-
-### Backend
-
-1. Go to `backend`
-2. Run `npm install`
-3. Create `.env`
-4. Run `npm run dev`
-
-### Frontend
-
-1. Go to `frontend`
-2. Run Tailwind watch
-3. Open `frontend/src/index.html` with Live Server
-
----
-
-## Troubleshooting
-
-### Backend Does Not Connect to SQL Server
-
-Check:
-
-- SQL Server is running
-- the database name is correct
-- the server name is correct
-- the `.env` values are correct
-- Windows Authentication is being used correctly
-
-### `Cannot GET /api/...`
-
-This usually means:
-
-- the backend is not running
-- the route is not registered
-- the wrong request method is being used
-
-### `req.body` Is Undefined
-
-Check:
-
-- `app.use(express.json())` is in `server.js`
-- Thunder Client is sending JSON
-- the request method is `POST` if required
-
-### Tailwind Looks Stuck
-
-This is normal if `--watch` is being used.
-
-If the terminal shows repeated messages like:
-
-```text
-Done in 5ms
-```
-
-Tailwind is running correctly.
-
-### Frontend Changes Are Not Appearing
-
-Try:
-
-- saving the file
-- hard refreshing the browser with `Ctrl + Shift + R`
-- making sure Live Server is serving the correct file
-- making sure Tailwind watch is still running
-
-### Images Are Missing
-
-Check:
-
-- `dbo.hotel_image.image` contains valid image URLs
-- `/api/hotels` returns `image_url`
-- the homepage is using the correct `home.js`
-
----
-
-## GitHub Notes
-
-When pushing to GitHub:
-
-### Include
-
-- backend code
-- frontend code
-- database SQL files
-- setup guide
-- image update SQL file
-
-### Do Not Include
-
-- `.env`
-- `node_modules`
-- private secrets
-
-Suggested `.gitignore`:
-
-```gitignore
-node_modules/
-.env
-.vscode/
-```
-
----
-
-## Quick Start Summary
-
-If a teammate is setting up the project from scratch:
-
-1. Clone the repo
-2. Run the SQL setup files in SSMS
-3. Create the backend `.env`
-4. Run `npm install` in `backend`
-5. Run `npm run dev` in `backend`
-6. Run Tailwind watch in `frontend`
-7. Open `frontend/src/index.html` with Live Server
-
----
-
-## Optional Helpful Commands
-
-### Backend
-
+### 4. Run Application Locally
 ```bash
 cd backend
-npm install
-npm run dev
+npm start
 ```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css --watch
-```
+Open **`http://localhost:3000`** in your browser!
 
 ---
 
-## Notes About Reproducing the Homepage
+## 📄 License & Credits
 
-The most important part for reproducing the homepage is making sure the database includes the hotel image links.
-
-Without the SQL image updates, the cards may not display the correct images.
-
-If setup is done correctly, the teammate should be able to reproduce the same homepage and backend behavior locally.
+Built for CSE 4500 Platform Computing. Distributed under the MIT License.
