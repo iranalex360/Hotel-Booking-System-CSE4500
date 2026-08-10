@@ -867,12 +867,7 @@ function setupBookingModalEvents() {
       });
 
       closeBookingModal();
-
-      alert(
-        `Booking created successfully!\nTotal: ${formatCurrency(
-          result.booking.total_price
-        )}`
-      );
+      window.location.href = `./booking-confirmation.html?id=${result.booking.booking_id}`;
     } catch (error) {
       showBookingError(error.message);
     }

@@ -207,10 +207,58 @@ async function getBookingsByUserId(req, res) {
     res.status(500).json({
       message: error.message || "Failed to load bookings."
     });
+  } finally {
+    client.release();
+  }
+}
+
+async function getBookingById(req, res) {
+  const { bookingId } = req.params;
+  const client = await getClient();
+
+  try {
+    const result = await client.query(
+      `
+      SELECT
+        b.booking_id,
+        b.users_id,
+        b.room_id,
+        b.check_in_date,
+        b.check_out_date,
+        b.total_price,
+        b.guest_count,
+        r.price AS price_per_night,
+        COALESCE(rt.room_type, 'Standard Room') AS room_type_name,
+        h.hotel_id,
+        h.names AS hotel_name,
+        h.address AS hotel_address,
+        h.star_rating,
+        hi.image AS hotel_image
+      FROM booking b
+      INNER JOIN room r ON b.room_id = r.room_id
+      LEFT JOIN room_type rt ON r.room_type_id = rt.room_type_id
+      INNER JOIN hotel h ON r.hotel_id = h.hotel_id
+      LEFT JOIN hotel_image hi ON h.hotel_id = hi.hotel_id
+      WHERE b.booking_id = $1
+      `,
+      [bookingId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Booking not found." });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Failed to load booking details:", error);
+    res.status(500).json({ message: "Failed to load booking details." });
+  } finally {
+    client.release();
   }
 }
 
 module.exports = {
   createBooking,
-  getBookingsByUserId
+  getBookingsByUserId,
+  getBookingById
 };
