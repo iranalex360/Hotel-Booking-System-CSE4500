@@ -2,8 +2,8 @@
   "name": "hotel-booking-system",
   "version": "1.0.0",
   "scripts": {
+    "build": "cd frontend && npm install && npx @tailwindcss/cli -i ./src/input.css -o ./dist/output.css && cd ../backend && npm install",
     "start": "cd backend && node server.js",
-    "build": "cd backend && npm install",
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
