@@ -1,5 +1,8 @@
 ﻿# Hotel-Booking-System-CSE4500
 
+ # Google Slide Presentation:
+ https://docs.google.com/presentation/d/1yBi-aplX_WAS3CjlsNmqdeIomb3Ma2Sg/edit?slide=id.p1#slide=id.p1
+
 # Teammate Setup Guide
 
 ## Project Overview
