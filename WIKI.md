@@ -216,8 +216,7 @@ All SQL queries execute via parameterized placeholders (`$1, $2`), immunizing th
 
 - **Glassmorphism Aesthetic:** Modern backdrop blurring (`backdrop-blur-md`), curated HSL slate/sky blue palette, rounded cards (`rounded-[2.5rem]`), and drop shadows.
 - **Mobile Dropdown Drawer:** Fully responsive header with an interactive hamburger toggle (`☰` $\rightarrow$ `✕`) and smooth slide-down navigation drawer.
-- **Pure SVG Vector Icons:** 100% emoji-free UI utilizing vector SVG icons for hotels, bookings, search, contacts, print receipts, and ratings.
-- **Dynamic Responsive Sizing:** Hero section auto-expands (`min-h-[560px] py-10 md:py-0`) to eliminate element clipping on small viewports.
+- **Pure SVG Vector Icons:** UI utilizing vector SVG icons for hotels, bookings, search, contacts, print receipts, and ratings.
 
 ---
 
