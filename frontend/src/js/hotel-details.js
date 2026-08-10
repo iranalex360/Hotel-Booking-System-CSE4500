@@ -27,7 +27,11 @@ function resolveImageUrl(imageUrl) {
     return imageUrl;
   }
 
-  return `http://localhost:3000${imageUrl}`;
+  const origin = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : window.location.origin;
+
+  return `${origin}${imageUrl}`;
 }
 
 function getHotelIdFromUrl() {
@@ -456,7 +460,7 @@ function renderHotelDetails(hotel) {
 let bookingRooms = [];
 
 async function fetchHotelRooms(hotelId) {
-  const response = await fetch(`http://localhost:3000/api/hotels/${hotelId}/rooms`);
+  const response = await fetch(`${API_BASE_URL}/hotels/${hotelId}/rooms`);
 
   if (!response.ok) {
     throw new Error("Failed to load rooms.");
@@ -466,7 +470,7 @@ async function fetchHotelRooms(hotelId) {
 }
 
 async function createBooking(bookingData) {
-  const response = await fetch("http://localhost:3000/api/bookings", {
+  const response = await authenticatedFetch(`${API_BASE_URL}/bookings`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -971,7 +975,7 @@ function showBookingError(message) {
 // ---------- reviews ----------
 
 async function fetchHotelReviews(hotelId) {
-  const response = await fetch(`http://localhost:3000/api/hotels/${hotelId}/reviews`);
+  const response = await fetch(`${API_BASE_URL}/hotels/${hotelId}/reviews`);
   const data = await response.json();
 
   if (!response.ok) {

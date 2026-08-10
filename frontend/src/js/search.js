@@ -1,5 +1,7 @@
 if (typeof API_BASE_URL === "undefined") {
-  var API_BASE_URL = "http://localhost:3000/api";
+  var API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000/api"
+    : "/api";
 }
 
 const searchForm = document.getElementById("search-form");
@@ -31,7 +33,11 @@ function resolveImageUrl(imageUrl) {
     return imageUrl;
   }
 
-  return `http://localhost:3000${imageUrl}`;
+  const origin = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : window.location.origin;
+
+  return `${origin}${imageUrl}`;
 }
 
 function formatCurrency(amount) {
