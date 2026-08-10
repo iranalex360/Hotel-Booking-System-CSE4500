@@ -2,6 +2,8 @@
   "name": "hotel-booking-system",
   "version": "1.0.0",
   "scripts": {
+    "start": "cd backend && node server.js",
+    "build": "cd backend && npm install",
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
