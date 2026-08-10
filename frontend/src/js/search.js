@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:3000/api";
+if (typeof API_BASE_URL === "undefined") {
+  var API_BASE_URL = "http://localhost:3000/api";
+}
 
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
@@ -57,13 +59,15 @@ async function searchHotels({ append = false } = {}) {
 
   if (!append) {
     currentOffset = 0;
-    currentHotels = [];
 
-    resultsContainer.innerHTML = `
-      <div class="col-span-full rounded-3xl border border-slate-200 bg-white p-6 text-center text-slate-500">
-        Searching hotels...
-      </div>
-    `;
+    // Only show full loading card if grid is currently empty
+    if (!currentHotels.length) {
+      resultsContainer.innerHTML = `
+        <div class="col-span-full rounded-3xl border border-slate-200 bg-white p-6 text-center text-slate-500">
+          Searching hotels...
+        </div>
+      `;
+    }
 
     resultsCount.textContent = "Searching...";
     hideLoadMoreButton();

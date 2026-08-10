@@ -5,10 +5,11 @@ const {
   saveSelectedHotelImage
 } = require("../controllers/imageCandidatesController");
 
+const { optionalAuthMiddleware } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-router.get("/hotels", getHotelsForImagePicker);
-
-router.post("/hotels/:id/save", saveSelectedHotelImage);
+router.get("/hotels", optionalAuthMiddleware, getHotelsForImagePicker);
+router.post("/hotels/:id/save", optionalAuthMiddleware, saveSelectedHotelImage);
 
 module.exports = router;

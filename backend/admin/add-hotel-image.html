@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Hotel Images | Admin Dashboard</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --error: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 32px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 260px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+
+    .stats-badge {
+      background: #e0f2fe;
+      color: var(--primary);
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 14px;
+    }
+
+    .hotel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .hotel-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .hotel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+      gap: 12px;
+    }
+
+    .hotel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .hotel-id {
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .hotel-address {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+
+    .url-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .url-input:focus {
+      border-color: var(--primary);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .btn-secondary:hover {
+      background: #e2e8f0;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .preview-container {
+      margin-top: 14px;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      max-height: 220px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: none;
+      object-fit: cover;
+      margin-top: 8px;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .status-msg.success {
+      color: var(--success);
+    }
+
+    .status-msg.error {
+      color: var(--error);
+    }
+
+    #loading-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 16px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px border var(--border);
+    }
+
+    .no-results {
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--text-muted);
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Add Hotel Images</h1>
+      <p class="subtitle">Update image URLs, websites, or delete permanently closed hotels from the database.</p>
+    </header>
+
+    <div class="toolbar">
+      <input type="text" id="search-filter" class="search-input" placeholder="Filter by hotel name or ID..." />
+      <div id="stats-badge" class="stats-badge">Loading...</div>
+    </div>
+
+    <div id="loading-state">Loading hotels from database...</div>
+    <div id="hotels-list"></div>
+  </div>
+
+  <script>
+    const authToken = localStorage.getItem("token");
+    let allHotels = [];
+    const hotelsContainer = document.getElementById("hotels-list");
+    const loadingState = document.getElementById("loading-state");
+    const statsBadge = document.getElementById("stats-badge");
+    const searchFilter = document.getElementById("search-filter");
+
+    function getAuthHeaders() {
+      const token = localStorage.getItem("token");
+      return token ? { "Authorization": `Bearer ${token}` } : {};
+    }
+
+    async function loadHotels() {
+      try {
+        const response = await fetch("/api/image-candidates/hotels", {
+          headers: getAuthHeaders()
+        });
+        const hotels = await response.json();
+
+        if (!response.ok) {
+          throw new Error(hotels.details || hotels.error || "Failed to load hotels");
+        }
+
+        allHotels = hotels;
+        loadingState.style.display = "none";
+        renderHotels(allHotels);
+      } catch (error) {
+        loadingState.className = "status-msg error";
+        loadingState.textContent = `Error: ${error.message}`;
+      }
+    }
+
+    function renderHotels(hotelsToRender) {
+      statsBadge.textContent = `${hotelsToRender.length} of ${allHotels.length} Hotels`;
+      hotelsContainer.innerHTML = "";
+
+      if (hotelsToRender.length === 0) {
+        hotelsContainer.innerHTML = `
+          <div class="no-results">
+            <h3>No matching hotels found</h3>
+            <p>Try typing a different name or clear your search filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      hotelsToRender.forEach((hotel) => {
+        const card = document.createElement("div");
+        card.className = "hotel-card";
+        card.id = `hotel-card-${hotel.hotel_id}`;
+
+        const hasImage = Boolean(hotel.image);
+        const hasWebsite = Boolean(hotel.urls);
+
+        card.innerHTML = `
+          <div class="hotel-header">
+            <div>
+              <div class="hotel-title">${escapeHtml(hotel.names)}</div>
+              <div class="hotel-address" style="margin-top: 2px;">📍 ${escapeHtml(hotel.address || "No address listed")}</div>
+            </div>
+            <div class="hotel-id">ID #${hotel.hotel_id}</div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 8px;">📊 Stored in Database:</div>
+            
+            <div id="website-link-${hotel.hotel_id}" style="font-size: 13px; margin-bottom: 6px; word-break: break-all;">
+              🌐 <strong>Website URL:</strong> 
+              ${hasWebsite ? `<a href="${escapeHtmlAttribute(hotel.urls)}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">${escapeHtml(hotel.urls)}</a>` : '<span style="color: #94a3b8;">No website URL saved</span>'}
+            </div>
+
+            <div id="existing-img-${hotel.hotel_id}" style="font-size: 13px; word-break: break-all;">
+              🖼️ <strong>Image URL:</strong> 
+              ${hasImage ? `<a href="${escapeHtmlAttribute(hotel.image)}" target="_blank" style="color: #16a34a; font-weight: 600; text-decoration: underline;">${escapeHtml(hotel.image)}</a>` : '<span style="color: #94a3b8;">No image URL saved</span>'}
+            </div>
+
+            ${hasImage ? `
+              <div style="margin-top: 10px;">
+                <img src="${escapeHtmlAttribute(hotel.image)}" alt="${escapeHtmlAttribute(hotel.names)}" style="max-width: 100%; max-height: 180px; border-radius: 10px; border: 1px solid var(--border); object-fit: cover;" onerror="this.style.display='none'" />
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="form-group">
+            <label for="website-url-${hotel.hotel_id}">Edit Website URL (hotel_image.urls)</label>
+            <input
+              id="website-url-${hotel.hotel_id}"
+              type="text"
+              class="url-input"
+              placeholder="Paste hotel website URL (https://...)"
+              value="${hasWebsite ? escapeHtmlAttribute(hotel.urls) : ""}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="image-url-${hotel.hotel_id}">Edit Image URL (hotel_image.image)</label>
+            <input
+              id="image-url-${hotel.hotel_id}"
+              type="text"
+              class="url-input"
+              placeholder="Paste image URL (https://...)"
+              value="${hasImage ? escapeHtmlAttribute(hotel.image) : ""}"
+            />
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="previewImage(${hotel.hotel_id})">Preview New Image</button>
+            <button class="btn btn-primary" onclick="saveImage(${hotel.hotel_id})">Save Changes to DB</button>
+            <button class="btn btn-danger" style="margin-left: auto;" onclick="deleteHotel(${hotel.hotel_id})">🗑️ Delete Closed Hotel</button>
+          </div>
+
+          <div class="preview-container">
+            <img id="preview-${hotel.hotel_id}" class="preview-img" alt="Hotel Preview" />
+          </div>
+
+          <div id="status-${hotel.hotel_id}" class="status-msg"></div>
+        `;
+
+        hotelsContainer.appendChild(card);
+      });
+    }
+
+    function previewImage(hotelId) {
+      const input = document.getElementById(`image-url-${hotelId}`);
+      const preview = document.getElementById(`preview-${hotelId}`);
+      const status = document.getElementById(`status-${hotelId}`);
+
+      const imageUrl = input.value.trim();
+
+      if (!imageUrl) {
+        status.className = "status-msg error";
+        status.textContent = "Please enter an image URL to preview.";
+        return;
+      }
+
+      preview.src = imageUrl;
+      preview.style.display = "block";
+      status.className = "status-msg";
+      status.textContent = "";
+    }
+
+    async function saveImage(hotelId) {
+      const imageInput = document.getElementById(`image-url-${hotelId}`);
+      const websiteInput = document.getElementById(`website-url-${hotelId}`);
+      const status = document.getElementById(`status-${hotelId}`);
+      const existingImgDiv = document.getElementById(`existing-img-${hotelId}`);
+      const websiteLinkDiv = document.getElementById(`website-link-${hotelId}`);
+
+      const imageUrl = imageInput.value.trim();
+      const websiteUrl = websiteInput.value.trim();
+
+      if (!imageUrl && !websiteUrl) {
+        status.className = "status-msg error";
+        status.textContent = "Please enter at least an image URL or a website URL.";
+        return;
+      }
+
+      try {
+        status.className = "status-msg";
+        status.textContent = "Saving to database...";
+
+        const response = await fetch(`/api/image-candidates/hotels/${hotelId}/save`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders()
+          },
+          body: JSON.stringify({ imageUrl, websiteUrl })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.details || data.error || `HTTP ${response.status}: Failed to save hotel data`);
+        }
+
+        status.className = "status-msg success";
+        status.textContent = "✓ Saved successfully to hotel_image table!";
+
+        if (existingImgDiv && imageUrl) {
+          existingImgDiv.innerHTML = `🖼️ <strong>Image URL:</strong> <a href="${escapeHtmlAttribute(imageUrl)}" target="_blank" style="color: #16a34a; font-weight: 600; text-decoration: underline;">${escapeHtml(imageUrl)}</a>`;
+        }
+
+        if (websiteLinkDiv && websiteUrl) {
+          websiteLinkDiv.innerHTML = `🌐 <strong>Website URL:</strong> <a href="${escapeHtmlAttribute(websiteUrl)}" target="_blank" style="color: #0284c7; font-weight: 600; text-decoration: underline;">${escapeHtml(websiteUrl)}</a>`;
+        }
+
+        const targetHotel = allHotels.find((h) => h.hotel_id === hotelId);
+        if (targetHotel) {
+          if (imageUrl) targetHotel.image = imageUrl;
+          if (websiteUrl) targetHotel.urls = websiteUrl;
+        }
+
+      } catch (error) {
+        status.className = "status-msg error";
+        status.textContent = error.message;
+      }
+    }
+
+    async function deleteHotel(hotelId) {
+      const hotel = allHotels.find((h) => h.hotel_id === hotelId);
+      const hotelName = hotel ? hotel.names : `Hotel #${hotelId}`;
+
+      const confirmMessage = `Are you sure you want to PERMANENTLY delete "${hotelName}" (ID #${hotelId})?\n\nThis will remove the hotel and all its associated rooms, images, and reviews from the database.`;
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/hotels/${hotelId}`, {
+          method: "DELETE",
+          headers: getAuthHeaders()
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(data.details || data.error || `Server returned ${response.status}.`);
+        }
+
+        alert(`✓ ${data.message || 'Hotel deleted successfully.'}`);
+
+        const card = document.getElementById(`hotel-card-${hotelId}`);
+        if (card) {
+          card.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+          card.style.opacity = "0";
+          card.style.transform = "scale(0.95)";
+          setTimeout(() => card.remove(), 300);
+        }
+
+        allHotels = allHotels.filter((h) => h.hotel_id !== hotelId);
+        statsBadge.textContent = `${allHotels.length} Hotels`;
+
+      } catch (error) {
+        alert(`❌ Delete Error: ${error.message}`);
+      }
+    }
+
+    searchFilter.addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase().trim();
+      if (!term) {
+        renderHotels(allHotels);
+        return;
+      }
+
+      const filtered = allHotels.filter((hotel) => {
+        const nameMatch = hotel.names && hotel.names.toLowerCase().includes(term);
+        const idMatch = String(hotel.hotel_id) === term;
+        return nameMatch || idMatch;
+      });
+
+      renderHotels(filtered);
+    });
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeHtmlAttribute(value) {
+      return escapeHtml(value);
+    }
+
+    loadHotels();
+  </script>
+</body>
+
+</html>

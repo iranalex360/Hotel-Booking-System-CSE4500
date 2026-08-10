@@ -1,14 +1,23 @@
 const bcrypt = require("bcryptjs");
-const { getConnection, sql } = require("../db");
+const jwt = require("jsonwebtoken");
+const { query } = require("../db");
+const { JWT_SECRET } = require("../middleware/authMiddleware");
+
+function determineRole(email) {
+  if (!email) return "user";
+  const cleanEmail = email.toLowerCase().trim();
+  if (cleanEmail.includes("admin") || cleanEmail.endsWith("@admin.com")) {
+    return "admin";
+  }
+  return "user";
+}
 
 async function registerUser(req, res) {
   try {
     const { full_name, email, password, phone } = req.body;
 
     if (!full_name || !email || !password || !phone) {
-      return res.status(400).json({
-        message: "Please fill in all fields."
-      });
+      return res.status(400).json({ message: "Please fill in all fields." });
     }
 
     if (password.length < 6) {
@@ -17,69 +26,58 @@ async function registerUser(req, res) {
       });
     }
 
-    const pool = await getConnection();
+    const cleanEmail = email.toLowerCase().trim();
 
-    const existingUser = await pool
-      .request()
-      .input("email", sql.VarChar(255), email)
-      .query(`
-        SELECT users_id
-        FROM dbo.users
-        WHERE email = @email
-      `);
+    // Check if email already exists
+    const existingUser = await query(
+      "SELECT users_id FROM users WHERE LOWER(email) = $1",
+      [cleanEmail]
+    );
 
-    if (existingUser.recordset.length > 0) {
+    if (existingUser.rows.length > 0) {
       return res.status(409).json({
         message: "An account with this email already exists."
       });
     }
 
-    const idResult = await pool.request().query(`
-      SELECT ISNULL(MAX(users_id), 0) + 1 AS nextUserId
-      FROM dbo.users
-    `);
+    // Get next ID
+    const idResult = await query(
+      "SELECT COALESCE(MAX(users_id), 0) + 1 AS next_id FROM users"
+    );
+    const nextUserId = idResult.rows[0].next_id;
 
-    const nextUserId = idResult.recordset[0].nextUserId;
-
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const passwordBuffer = Buffer.from(hashedPassword, "utf8");
+    const role = determineRole(cleanEmail);
 
-    await pool
-      .request()
-      .input("users_id", sql.Int, nextUserId)
-      .input("full_name", sql.VarChar(255), full_name)
-      .input("email", sql.VarChar(255), email)
-      .input("password", sql.VarBinary(sql.MAX), passwordBuffer)
-      .input("phone", sql.VarChar(50), phone)
-      .query(`
-        INSERT INTO dbo.users (
-          users_id,
-          full_name,
-          email,
-          password,
-          phone
-        )
-        VALUES (
-          @users_id,
-          @full_name,
-          @email,
-          @password,
-          @phone
-        )
-      `);
+    await query(
+      `
+      INSERT INTO users (users_id, full_name, email, password, phone, email_verified)
+      VALUES ($1, $2, $3, $4, $5, TRUE)
+      `,
+      [nextUserId, full_name, cleanEmail, hashedPassword, phone]
+    );
+
+    // Sign JWT token
+    const token = jwt.sign(
+      { users_id: nextUserId, email: cleanEmail, role },
+      JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
     res.status(201).json({
       message: "Account created successfully.",
+      token,
       user: {
         users_id: nextUserId,
         full_name,
-        email,
-        phone
+        email: cleanEmail,
+        phone,
+        role
       }
     });
   } catch (error) {
     console.error("Register error:", error);
-
     res.status(500).json({
       message: error.message || "Failed to create account."
     });
@@ -96,54 +94,50 @@ async function loginUser(req, res) {
       });
     }
 
-    const pool = await getConnection();
+    const cleanEmail = email.toLowerCase().trim();
 
-    const result = await pool
-      .request()
-      .input("email", sql.VarChar(255), email)
-      .query(`
-        SELECT
-          users_id,
-          full_name,
-          email,
-          password,
-          phone
-        FROM dbo.users
-        WHERE email = @email
-      `);
+    const result = await query(
+      `
+      SELECT users_id, full_name, email, password, phone
+      FROM users
+      WHERE LOWER(email) = $1
+      `,
+      [cleanEmail]
+    );
 
-    if (result.recordset.length === 0) {
-      return res.status(401).json({
-        message: "Invalid email or password."
-      });
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: "Invalid email or password." });
     }
 
-    const user = result.recordset[0];
-
-    const storedPassword = Buffer.isBuffer(user.password)
-      ? user.password.toString("utf8")
-      : String(user.password);
-
-    const passwordMatches = await bcrypt.compare(password, storedPassword);
+    const user = result.rows[0];
+    const passwordMatches = await bcrypt.compare(password, user.password);
 
     if (!passwordMatches) {
-      return res.status(401).json({
-        message: "Invalid email or password."
-      });
+      return res.status(401).json({ message: "Invalid email or password." });
     }
+
+    const role = determineRole(user.email);
+
+    // Sign JWT token
+    const token = jwt.sign(
+      { users_id: user.users_id, email: user.email, role },
+      JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
     res.json({
       message: "Signed in successfully.",
+      token,
       user: {
         users_id: user.users_id,
         full_name: user.full_name,
         email: user.email,
-        phone: user.phone
+        phone: user.phone,
+        role
       }
     });
   } catch (error) {
     console.error("Login error:", error);
-
     res.status(500).json({
       message: error.message || "Failed to sign in."
     });

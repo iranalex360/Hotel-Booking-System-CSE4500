@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:3000/api";
+if (typeof API_BASE_URL === "undefined") {
+  var API_BASE_URL = "http://localhost:3000/api";
+}
 
 const signinRequired = document.getElementById("signin-required");
 const bookingsContent = document.getElementById("bookings-content");
@@ -62,56 +64,19 @@ function calculateNights(checkInDate, checkOutDate) {
   return nights > 0 ? nights : 0;
 }
 
-function renderAuthNav() {
-  const authNav = document.getElementById("auth-nav");
-
-  if (!authNav) return;
-
-  const usersId = localStorage.getItem("users_id");
-  const fullName = localStorage.getItem("full_name");
-
-  if (usersId && fullName) {
-    authNav.innerHTML = `
-      <div class="flex items-center gap-3">
-        <span class="text-sm font-semibold text-slate-600">
-          Hi, ${escapeHtml(fullName)}
-        </span>
-
-        <button
-          id="sign-out-btn"
-          class="rounded-2xl bg-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-300"
-          type="button"
-        >
-          Sign Out
-        </button>
-      </div>
-    `;
-
-    document.getElementById("sign-out-btn").addEventListener("click", () => {
-      localStorage.removeItem("users_id");
-      localStorage.removeItem("full_name");
-      localStorage.removeItem("email");
-
-      window.location.href = "./index.html";
-    });
-
-    return;
-  }
-
-  authNav.innerHTML = `
-    <a
-      href="./auth.html?redirect=./bookings.html"
-      class="rounded-2xl bg-sky-500 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-600"
-    >
-      Sign In
-    </a>
-  `;
-}
-
 async function fetchUserBookings() {
   const usersId = getLoggedInUserId();
+  const token = localStorage.getItem("token");
 
-  const response = await fetch(`${API_BASE_URL}/bookings/user/${usersId}`);
+  const headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/bookings/user/${usersId}`, { headers });
   const data = await response.json();
 
   if (!response.ok) {
@@ -122,7 +87,9 @@ async function fetchUserBookings() {
 }
 
 async function loadBookings() {
-  renderAuthNav();
+  if (typeof renderNavAuth === "function") {
+    renderNavAuth();
+  }
 
   if (!isUserLoggedIn()) {
     signinRequired.classList.remove("hidden");

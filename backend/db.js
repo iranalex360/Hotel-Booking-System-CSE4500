@@ -1,32 +1,32 @@
-const sql = require("mssql/msnodesqlv8");
+const { Pool } = require("pg");
 require("dotenv").config();
 
-const connectionString = `
-Driver={ODBC Driver 17 for SQL Server};
-Server=${process.env.DB_SERVER}\\${process.env.DB_INSTANCE};
-Database=${process.env.DB_DATABASE};
-Trusted_Connection=Yes;
-`;
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) || 6543,
+  database: process.env.DB_DATABASE,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  ssl: { rejectUnauthorized: false }, // Required for Supabase
+});
 
-let pool;
+pool.on("connect", () => {
+  console.log("Connected to PostgreSQL (Supabase)");
+});
 
-async function getConnection() {
-  try {
-    if (pool) return pool;
+pool.on("error", (err) => {
+  console.error("Unexpected database error:", err);
+});
 
-    pool = await sql.connect({
-      connectionString,
-      options: {
-        trustServerCertificate: true
-      }
-    });
-
-    console.log("Connected to SQL Server");
-    return pool;
-  } catch (error) {
-    console.error("Database connection failed:", error);
-    throw error;
-  }
+// Simple query helper — returns a pg result object (use result.rows)
+async function query(text, params) {
+  const result = await pool.query(text, params);
+  return result;
 }
 
-module.exports = { sql, getConnection };
+// For transactions — caller must release the client
+async function getClient() {
+  return pool.connect();
+}
+
+module.exports = { query, getClient };

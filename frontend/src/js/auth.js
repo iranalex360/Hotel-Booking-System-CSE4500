@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:3000/api";
+if (typeof API_BASE_URL === "undefined") {
+  var API_BASE_URL = "http://localhost:3000/api";
+}
 
 const showLoginButton = document.getElementById("show-login");
 const showRegisterButton = document.getElementById("show-register");
@@ -45,10 +47,19 @@ function showRegister() {
   authMessage.classList.add("hidden");
 }
 
-function saveUserToLocalStorage(user) {
-  localStorage.setItem("users_id", user.users_id);
-  localStorage.setItem("full_name", user.full_name);
-  localStorage.setItem("email", user.email);
+function saveUserToLocalStorage(user, token) {
+  if (token) {
+    localStorage.setItem("token", token);
+    document.cookie = `token=${token}; path=/; max-age=86400; SameSite=Strict`;
+  }
+  if (user) {
+    localStorage.setItem("users_id", user.users_id);
+    localStorage.setItem("full_name", user.full_name);
+    localStorage.setItem("email", user.email);
+    if (user.role) {
+      localStorage.setItem("role", user.role);
+    }
+  }
 }
 
 function getRedirectUrl() {
@@ -56,10 +67,10 @@ function getRedirectUrl() {
   return params.get("redirect") || "./index.html";
 }
 
-showLoginButton.addEventListener("click", showLogin);
-showRegisterButton.addEventListener("click", showRegister);
+showLoginButton?.addEventListener("click", showLogin);
+showRegisterButton?.addEventListener("click", showRegister);
 
-loginForm.addEventListener("submit", async (event) => {
+loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const email = document.getElementById("login-email").value.trim();
@@ -71,10 +82,7 @@ loginForm.addEventListener("submit", async (event) => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        email,
-        password
-      })
+      body: JSON.stringify({ email, password })
     });
 
     const result = await response.json();
@@ -83,7 +91,7 @@ loginForm.addEventListener("submit", async (event) => {
       throw new Error(result.message || "Failed to sign in.");
     }
 
-    saveUserToLocalStorage(result.user);
+    saveUserToLocalStorage(result.user, result.token);
     showMessage("Signed in successfully. Redirecting...", "success");
 
     setTimeout(() => {
@@ -94,7 +102,7 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
-registerForm.addEventListener("submit", async (event) => {
+registerForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const full_name = document.getElementById("register-name").value.trim();
@@ -122,7 +130,7 @@ registerForm.addEventListener("submit", async (event) => {
       throw new Error(result.message || "Failed to create account.");
     }
 
-    saveUserToLocalStorage(result.user);
+    saveUserToLocalStorage(result.user, result.token);
     showMessage("Account created successfully. Redirecting...", "success");
 
     setTimeout(() => {

@@ -86,6 +86,10 @@ function escapeHtml(value) {
   return temp.innerHTML;
 }
 
+function escapeHtmlAttribute(value) {
+  return escapeHtml(value);
+}
+
 function normalizeDescriptionText(raw) {
   let text = stripHtml(raw).trim();
 
@@ -406,6 +410,14 @@ function renderHotelDetails(hotel) {
         <p class="mt-2 text-slate-500">
           ${escapeHtml(formatAddress(hotel.address))}
         </p>
+
+        ${hotel.website_url ? `
+          <div class="mt-3">
+            <a href="${escapeHtmlAttribute(hotel.website_url)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-sm font-semibold text-sky-600 transition hover:text-sky-700 hover:underline">
+              🌐 Visit Official Hotel Website ↗
+            </a>
+          </div>
+        ` : ""}
 
         <div class="mt-8">
           <h2 class="text-xl font-semibold text-slate-900">Description</h2>
@@ -936,7 +948,7 @@ function updateBookingSummary() {
 
   const nights = calculateNights(checkInDate, checkOutDate);
   const pricePerNight = selectedRoom ? Number(selectedRoom.price) : 0;
-  const totalPrice = pricePerNight * nights * guestCount;
+  const totalPrice = pricePerNight * nights;
 
   document.getElementById("summary-price-per-night").textContent =
     formatCurrency(pricePerNight);

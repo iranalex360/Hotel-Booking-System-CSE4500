@@ -6,7 +6,10 @@ const {
   getBookingsByUserId
 } = require("../controllers/bookingsController");
 
-router.get("/user/:usersId", getBookingsByUserId);
-router.post("/", createBooking);
+const { optionalAuthMiddleware } = require("../middleware/authMiddleware");
+
+// Use optionalAuthMiddleware so token is extracted if provided, maintaining backward compatibility
+router.get("/user/:usersId", optionalAuthMiddleware, getBookingsByUserId);
+router.post("/", optionalAuthMiddleware, createBooking);
 
 module.exports = router;

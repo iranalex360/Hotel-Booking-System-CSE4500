@@ -1,29 +1,28 @@
-const { getConnection, sql } = require("../db");
+const { query } = require("../db");
 
 async function getHotelsForImagePicker(req, res) {
   try {
-    const pool = await getConnection();
-
-    const result = await pool.request().query(`
+    const result = await query(`
       SELECT
         h.hotel_id,
         h.names,
         h.address,
-        existing.image
-      FROM dbo.hotel h
-      OUTER APPLY (
-        SELECT TOP 1 hi.image
-        FROM dbo.hotel_image hi
+        existing.image,
+        existing.urls
+      FROM hotel h
+      LEFT JOIN LATERAL (
+        SELECT hi.image, hi.urls
+        FROM hotel_image hi
         WHERE hi.hotel_id = h.hotel_id
         ORDER BY hi.image_id
-      ) existing
+        LIMIT 1
+      ) existing ON true
       ORDER BY h.hotel_id
     `);
 
-    res.json(result.recordset);
+    res.json(result.rows);
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
       error: "Failed to fetch hotels",
       details: error.message
@@ -34,97 +33,90 @@ async function getHotelsForImagePicker(req, res) {
 async function saveSelectedHotelImage(req, res) {
   try {
     const hotelId = Number(req.params.id);
-    const { imageUrl } = req.body;
+    const { imageUrl, websiteUrl } = req.body;
 
-    if (!hotelId || !imageUrl || String(imageUrl).trim() === "") {
+    const cleanImageUrl = imageUrl !== undefined && imageUrl !== null ? String(imageUrl).trim() : null;
+    const cleanWebsiteUrl = websiteUrl !== undefined && websiteUrl !== null ? String(websiteUrl).trim() : null;
+
+    if (!hotelId || (cleanImageUrl === null && cleanWebsiteUrl === null)) {
       return res.status(400).json({
-        error: "hotelId and imageUrl are required"
+        error: "hotelId and at least one of imageUrl or websiteUrl are required"
       });
     }
 
-    const cleanImageUrl = String(imageUrl).trim();
+    // Verify hotel exists
+    const hotelResult = await query(
+      "SELECT hotel_id, names FROM hotel WHERE hotel_id = $1",
+      [hotelId]
+    );
 
-    const pool = await getConnection();
-
-    const hotelResult = await pool
-      .request()
-      .input("hotel_id", sql.Int, hotelId)
-      .query(`
-        SELECT hotel_id, names
-        FROM dbo.hotel
-        WHERE hotel_id = @hotel_id
-      `);
-
-    if (!hotelResult.recordset.length) {
-      return res.status(404).json({
-        error: "Hotel not found"
-      });
+    if (!hotelResult.rows.length) {
+      return res.status(404).json({ error: "Hotel not found" });
     }
 
-    const hotel = hotelResult.recordset[0];
+    const hotel = hotelResult.rows[0];
 
-    const imageResult = await pool
-      .request()
-      .input("hotel_id", sql.Int, hotelId)
-      .query(`
-        SELECT TOP 1 image_id
-        FROM dbo.hotel_image
-        WHERE hotel_id = @hotel_id
-        ORDER BY image_id
-      `);
+    // Check if image/urls row already exists for this hotel
+    const imageResult = await query(
+      `
+      SELECT image_id, image, urls
+      FROM hotel_image
+      WHERE hotel_id = $1
+      ORDER BY image_id
+      LIMIT 1
+      `,
+      [hotelId]
+    );
 
-    if (imageResult.recordset.length) {
-      const imageId = imageResult.recordset[0].image_id;
+    if (imageResult.rows.length) {
+      const existing = imageResult.rows[0];
+      const imageId = existing.image_id;
+      const finalImage = cleanImageUrl !== null ? cleanImageUrl : existing.image;
+      const finalWebsite = cleanWebsiteUrl !== null ? cleanWebsiteUrl : existing.urls;
 
-      await pool
-        .request()
-        .input("image_id", sql.Int, imageId)
-        .input("imageUrl", sql.VarChar(sql.MAX), cleanImageUrl)
-        .query(`
-          UPDATE dbo.hotel_image
-          SET image = @imageUrl
-          WHERE image_id = @image_id
-        `);
+      await query(
+        "UPDATE hotel_image SET image = $1, urls = $2 WHERE image_id = $3",
+        [finalImage, finalWebsite, imageId]
+      );
 
       return res.json({
-        message: "Image updated successfully",
+        message: "Hotel website & image updated successfully",
         action: "updated",
         hotelId,
         hotelName: hotel.names,
         imageId,
-        imageUrl: cleanImageUrl
+        imageUrl: finalImage,
+        websiteUrl: finalWebsite
       });
     }
 
-    const insertResult = await pool
-      .request()
-      .input("hotel_id", sql.Int, hotelId)
-      .input("imageUrl", sql.VarChar(sql.MAX), cleanImageUrl)
-      .query(`
-        INSERT INTO dbo.hotel_image (image_id, hotel_id, urls, caption, image)
-        OUTPUT INSERTED.image_id
-        SELECT
-          ISNULL(MAX(image_id), 0) + 1,
-          @hotel_id,
-          NULL,
-          NULL,
-          @imageUrl
-        FROM dbo.hotel_image
-      `);
+    // Insert new image row
+    const nextIdResult = await query(
+      "SELECT COALESCE(MAX(image_id), 0) + 1 AS next_id FROM hotel_image"
+    );
+    const nextImageId = nextIdResult.rows[0].next_id;
+
+    await query(
+      `
+      INSERT INTO hotel_image (image_id, hotel_id, urls, caption, image)
+      VALUES ($1, $2, $3, NULL, $4)
+      `,
+      [nextImageId, hotelId, cleanWebsiteUrl, cleanImageUrl]
+    );
 
     res.json({
-      message: "Image inserted successfully",
+      message: "Hotel website & image inserted successfully",
       action: "inserted",
       hotelId,
       hotelName: hotel.names,
-      imageId: insertResult.recordset[0].image_id,
-      imageUrl: cleanImageUrl
+      imageId: nextImageId,
+      imageUrl: cleanImageUrl,
+      websiteUrl: cleanWebsiteUrl
     });
   } catch (error) {
     console.error(error);
-
     res.status(500).json({
-      error: "Failed to save image",
+      error: "Failed to save hotel data",
       details: error.message
     });
   }

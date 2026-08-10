@@ -1,4 +1,37 @@
-const API_BASE_URL = "http://localhost:3000/api";
+if (typeof API_BASE_URL === "undefined") {
+  var API_BASE_URL = "http://localhost:3000/api";
+}
+
+/**
+ * Custom fetch wrapper that automatically appends JWT Authorization Bearer header.
+ */
+async function authenticatedFetch(url, options = {}) {
+  const token = localStorage.getItem("token");
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {})
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers
+  });
+
+  if (response.status === 401) {
+    console.warn("Unauthorized request (401). Clearing token...");
+    localStorage.removeItem("token");
+    localStorage.removeItem("users_id");
+    localStorage.removeItem("full_name");
+    localStorage.removeItem("email");
+  }
+
+  return response;
+}
 
 async function fetchHotels() {
   const response = await fetch(`${API_BASE_URL}/hotels`);
@@ -19,14 +52,16 @@ async function fetchRoomsByHotelId(id) {
 }
 
 async function createBooking(bookingData) {
-  const response = await fetch(`${API_BASE_URL}/bookings`, {
+  const response = await authenticatedFetch(`${API_BASE_URL}/bookings`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
     body: JSON.stringify(bookingData)
   });
 
-  if (!response.ok) throw new Error("Failed to create booking");
-  return response.json();
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || data.error || "Failed to create booking");
+  }
+
+  return data;
 }
